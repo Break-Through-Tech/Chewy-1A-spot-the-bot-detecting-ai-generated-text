@@ -41,7 +41,7 @@ The project leverages relevant methodologies in NLP and classifier development, 
 
 **Company / Org:** Chewy.com  
 **Challenge Advisor:** Rishabh Jain, rishab1300@gmail.com   
-**AI Studio Coach:** Anshul Rehpade, anshulrehpade@breakthroughtech.org   
+**AI Studio Coach:** Anshul Rehpade, anshul.rehpade@breakthroughtech.org   
 **Program:** Break Through Tech AI Studio - Fall 2026
 
 ---
