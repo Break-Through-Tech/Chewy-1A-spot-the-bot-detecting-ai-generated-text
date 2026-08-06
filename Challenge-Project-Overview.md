@@ -63,6 +63,13 @@ In this project, you will use a public corpus of paired human-written and AI-gen
 Reproducibility: a clean, well-documented Colab notebook and public GitHub repo the team can share on LinkedIn, with a short final report covering method, results, and limitations (including dataset drift — see stretch/notes).   
 - Real-world demo (the capstone): a working, publicly viewable web app — a Streamlit frontend calling a lightweight API that serves the trained model — where anyone can paste text and get a "human vs. AI" prediction with a confidence score. Deployed free on Streamlit Community Cloud or Hugging Face Spaces, this is the piece that makes the project feel like a real product and showcases end-to-end ML skills (serving + frontend) on the students' portfolios.
 
+### Stretch Goals
+- Adversarial generation: use a small/open LLM to generate the paraphrased "humanized" test cases automatically, rather than hand-crafting them.
+- Dataset-drift test: HC3 was built on an early-2023 model (GPT-3.5). Collect a small modern sample and test whether the detector still works — a great lesson in why detectors go stale.
+Bias/fairness check: measure whether the detector performs unevenly across HC3's domains (medical, legal, finance), tying into the course's bias-mitigation module.   
+- Pretrained embeddings: swap TF-IDF for transformer sentence-embeddings and quantify the lift.   
+- Make the demo interactive/explainable: in the deployed app, let users paraphrase text and watch the prediction flip in real time, or highlight which words pushed the model toward "AI" vs. "human" — turning the robustness finding into something a viewer can actually feel.
+
 ### Project Milestones
 
 Use these milestones to guide your work. Your team will create a **GitHub Projects board** to track tasks within each milestone.
@@ -82,10 +89,9 @@ Use these milestones to guide your work. Your team will create a **GitHub Projec
 **Name and Source:** HC3 dataset, available via Hugging Face  
 **Format:** CSV/TSV, JSON  
 **Size:** under 1gb  
-**Location:** [Link to dataset or instructions for accessing it]
+**Location:** https://huggingface.co/datasets/Hello-SimpleAI/HC3
 
 ### Key Details
-- The HC3 dataset: a public corpus of paired human-written and AI-generated (ChatGPT) answers spanning everyday, medical, legal, financial, and psychology questions. Available via Hugging Face in CSV/TSV and JSON formats.
 - [Any known limitations or preprocessing needed]
 - [Link to data dictionary or documentation, if available]
 
@@ -93,19 +99,13 @@ Use these milestones to guide your work. Your team will create a **GitHub Projec
 
 ## 🛠️ Suggested Approach
 
-**ML Problem Type:** Classification, NLP
+**ML Problem Type:** Classification, NLP, Deep Learning / Neural Networks, Large Language Models (LLMs)/ Generative AI, Transfer Learning / Pre-trained Models
 
 **Recommended Libraries:**
-- Natural Language Processing (NLP)
-- Supervised Machine Learning
-- Deep Learning (TF-IDF, Logistic Regression, Feedforward Neural Network in Keras)
-- FastAPI
-- Streamlit
-- Google Colab
-- Hugging Face Spaces
+- [e.g., pandas, scikit-learn, TensorFlow, Hugging Face]
 
 **Evaluation Metrics:**
-- Accuracy, Precision/Recall, macro-F1 score
+- [e.g., Accuracy, Precision/Recall, RMSE, BLEU score]
 
 ---
 
@@ -134,14 +134,19 @@ The following resources will help your team understand the problem space and pot
 
 ## 🤝 How We'll Work Together
 
-**Check-ins:** During our biweekly 60-min AI Studio Lab Section meeting block (2nd and 4th week of every month)  
-**Communication:** Slack (Break Through Tech workspace)  
-**Response time:** Within 48 hours on weekdays  
+**Official check-ins:** During our biweekly 45-minute AI Studio Lab Section meeting block (2nd and 4th week of every month)
 
-**Recommended Tools:**
-- **Coding:** Google Colab, VS Code
-- **Collaboration:** GitHub, Notion
-- **Virtual Meetings:** Zoom, Google Meet
+ **Other ways to reach out to me with questions:** 
+* [e.g., Your team's channel within Break Through Tech’s Discord space]
+* [e.g., Email; please copy your teammates and AI Studio Coach]
+* [e.g., Request a team check-in on Zoom]
+* [Note: I will aim to respond within 48 hours. Please reach out to your AI Studio Coach with urgent questions.]
+
+> 💡 **Challenge Advisor: Please update the above based on your availability and preference. If you are not able to answer questions or meet with fellows outside of the biweekly Lab Section check-ins, simply write in "N/A (only available during the official check-in times)"**
+
+**Recommended free coding / collaboration tools**
+* […]
+* […]
 
 ---
 
@@ -151,10 +156,10 @@ The following resources will help your team understand the problem space and pot
 2. **Begin reviewing the dataset** using the link above
 3. **Read the GitHub Projects documentation** [here](https://docs.github.com/en/issues/planning-and-tracking-with-projects/learning-about-projects/about-projects)
 
-I'm excited to work with you!
+I’m excited to work with you!
 
 ---
 
 ## ❓ Questions?
 
-Please bring any questions to our first meeting during the week of August 24th (Break Through Tech's Bridge to Studio - Session B).
+Please bring any questions to our first meeting during the week of August 24th (Break Through Tech’s Bridge to Studio - Session C). 
