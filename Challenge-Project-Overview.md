@@ -55,10 +55,13 @@ Chewy.com is a leading online retailer in the pet supplies industry, focusing on
 ## 🎯 The Challenge
 
 ### Project Summary
-In this project, you will use a public corpus of paired human-written and AI-generated (ChatGPT) answers — the HC3 dataset — to build a classifier that distinguishes human-written from AI-generated text and measure how well it holds up when the AI text is lightly paraphrased to evade detection. This will help address the growing challenge of content authenticity and academic integrity, determining whether text was written by a person or a machine and reveal where automated AI-text detectors fail in the real world.
+In this project, you will use a public corpus of paired human-written and AI-generated (ChatGPT) answers — the HC3 dataset, spanning everyday, medical, legal, financial, and psychology questions and natural language processing with supervised machine learning and deep learning (TF-IDF feature engineering, logistic regression, and a feedforward neural network built in Keras), followed by an adversarial-robustness evaluation to build a classifier that distinguishes human-written from AI-generated text and to measure how well it holds up when the AI text is lightly paraphrased to evade detection. This will help address the growing challenge of content authenticity and academic integrity, determining whether text was written by a person or a machine and reveal where automated AI-text detectors fail in the real world.
 
 ### Success Criteria
-Strong classification performance (macro-F1 and accuracy) on the held-out test set, reported against a majority-class baseline with precision/recall and a confusion matrix. A distinctive success criterion is a robustness curve showing performance degradation when AI text is paraphrased.
+- Primary metric: strong classification performance on the held-out test set — macro-F1 and accuracy, reported against a majority-class baseline, with precision/recall and a confusion matrix.   
+- Distinctive success criterion: a robustness curve showing how detector performance degrades when AI text is paraphrased, plus a written analysis of why it breaks (the real-world insight).
+Reproducibility: a clean, well-documented Colab notebook and public GitHub repo the team can share on LinkedIn, with a short final report covering method, results, and limitations (including dataset drift — see stretch/notes).   
+- Real-world demo (the capstone): a working, publicly viewable web app — a Streamlit frontend calling a lightweight API that serves the trained model — where anyone can paste text and get a "human vs. AI" prediction with a confidence score. Deployed free on Streamlit Community Cloud or Hugging Face Spaces, this is the piece that makes the project feel like a real product and showcases end-to-end ML skills (serving + frontend) on the students' portfolios.
 
 ### Project Milestones
 
@@ -66,9 +69,9 @@ Use these milestones to guide your work. Your team will create a **GitHub Projec
 
 | Month | Milestone | Key Activities |
 |-------|-----------|----------------|
-| **September** | Data Understanding | Explore dataset, handle missing values, document findings |
-| **October** | Model Development | Train baseline model, experiment with approaches, iterate |
-| **November** | Evaluation & Presentation | Finalize model, prepare presentation, document results |
+| **September** | Data understanding & preparation | Load the HC3 dataset from Hugging Face; run EDA comparing human vs. ChatGPT answers (length, vocabulary richness, punctuation/structure patterns); clean and normalize text; build a stratified train/validation/test split; engineer baseline features (TF-IDF). Deliverable: a documented, reproducible data-prep notebook plus an EDA summary. |
+| **October** | Modeling & evaluation (baseline → deep) | Train and compare classic classifiers from the course (logistic regression as the primary baseline, with decision tree / k-NN for comparison) and establish the evaluation harness (accuracy, precision, recall, macro-F1, confusion matrix); then build a feedforward neural network in Keras and compare it against the baselines. Run error analysis to see which texts fool the models, and export/save the best model so it's ready to be served. Deliverable: a working detector (classic + neural) with a clear metrics report and a saved model file. |
+| **November** | Robustness experiment + deploy it as a real app (the novel core) | First, the key experiment: test the detector against paraphrased / "humanized" AI text and measure how much accuracy/F1 drops, plus a per-domain breakdown (does it hold up on medical vs. legal vs. everyday text?). Then take it to production: wrap the saved model in a lightweight API (e.g., FastAPI) and build a Streamlit frontend that calls it — a simple page where a user pastes text and instantly sees a "human vs. AI" verdict with a confidence score — deployed for free on Streamlit Community Cloud or Hugging Face Spaces. This gives students hands-on experience with model serving and frontend–backend integration, the end-to-end workflow they'll see in industry. Deliverable: a robustness analysis with failure-mode write-up, plus a live demo app. (Scope note: the deploy step sits on top of an already-complete model, so it can't endanger the core result. If time runs short, the simplest viable version is a self-contained Streamlit app that loads the model directly — no separate API — so the team always ships a working demo.) |
 
 **Note for the team:** Please create a GitHub Projects board in this repository to break these milestones into weekly tasks. Go to the **Projects** tab → **New project** → Choose **Board** → Add columns for each month.
 
