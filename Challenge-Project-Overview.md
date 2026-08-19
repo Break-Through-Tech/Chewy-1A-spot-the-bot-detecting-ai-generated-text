@@ -1,22 +1,3 @@
----
-
-> ## Challenge Advisor: Update & Finalize Your Project Overview
->
-> > 💡 **These grey text instructions are just for you, the team's Challenge Advisor; please delete them once you have completed the steps below.**
->
-> We've pre-populated this Challenge Project Overview page — which is what will be shared with your Break Through Tech student team in August — using the details from your submission form. You should have received an email inviting you to join this repo as a Collaborator, enabling you to add files and make edits.
-> 
-> In order for your project to be finalized and assigned to a team, please:
-> 1. **Review all sections below** and update or expand any content as needed, making sure to address the SME Feedback in the section immediately below. Look for square brackets to find the places below that require additional inputs from you (e.g., "About [Company / Org Name]").
-> 2. **Add your dataset** to the [data folder](data) in this repo.
-> 3. **Close the Issue assigned to you in this repo** to let us know that you have made your edits and the overview page is ready for final review. You can do this by going to the _Issues_ tab in the top left section of the menu above, add a comment that says "CA review complete", and click the button to Close the Issue. 
->
-> If you're unfamiliar with how to edit a page like this in GitHub, check out [this tutorial](https://ubc-lib-geo.github.io/gis-workshop-waml-template/content/handson/edit-readme.html) for a quick overview (start with step 2 and only edit this page), and [this guide](https://ubc-lib-geo.github.io/gis-workshop-waml-template/content/markdown.html) on how to use Markdown to compose text.
->
->
-> ❌ Remember that this is a public repo. Do NOT include: Proprietary data, PII, API keys, credentials, or anything confidential.
-
----
 
 ## 📋 BTT Internal Evaluation Notes
 *(This section is for BTT staff only — remove before sharing with students)*
@@ -55,7 +36,7 @@ Chewy.com is a leading online retailer in the pet supplies industry, focusing on
 ## 🎯 The Challenge
 
 ### Project Summary
-In this project, you will use a public corpus of paired human-written and AI-generated (ChatGPT) answers — the HC3 dataset, spanning everyday, medical, legal, financial, and psychology questions and natural language processing with supervised machine learning and deep learning (TF-IDF feature engineering, logistic regression, and a feedforward neural network built in Keras), followed by an adversarial-robustness evaluation to build a classifier that distinguishes human-written from AI-generated text and to measure how well it holds up when the AI text is lightly paraphrased to evade detection. This will help address the growing challenge of content authenticity and academic integrity, determining whether text was written by a person or a machine and reveal where automated AI-text detectors fail in the real world.
+In this project, you will use a public corpus of paired human-written and AI-generated (ChatGPT) answers — the HC3 dataset, spanning five domains (everyday/open-domain Q&A, Reddit ELI5 explanations, finance, medicine, and Wikipedia computer-science topics) and natural language processing with supervised machine learning and deep learning (TF-IDF feature engineering, logistic regression, and a feedforward neural network built in Keras), followed by an adversarial-robustness evaluation to build a classifier that distinguishes human-written from AI-generated text and to measure how well it holds up when the AI text is lightly paraphrased to evade detection. This will help address the growing challenge of content authenticity and academic integrity, determining whether text was written by a person or a machine and reveal where automated AI-text detectors fail in the real world.
 
 ### Success Criteria
 - Primary metric: strong classification performance on the held-out test set — macro-F1 and accuracy, reported against a majority-class baseline, with precision/recall and a confusion matrix.   
@@ -66,7 +47,7 @@ Reproducibility: a clean, well-documented Colab notebook and public GitHub repo 
 ### Stretch Goals
 - Adversarial generation: use a small/open LLM to generate the paraphrased "humanized" test cases automatically, rather than hand-crafting them.
 - Dataset-drift test: HC3 was built on an early-2023 model (GPT-3.5). Collect a small modern sample and test whether the detector still works — a great lesson in why detectors go stale.
-Bias/fairness check: measure whether the detector performs unevenly across HC3's domains (medical, legal, finance), tying into the course's bias-mitigation module.   
+Bias/fairness check: measure whether the detector performs unevenly across HC3's five domains (medicine, finance, open-domain Q&A, Reddit ELI5, Wikipedia CS), tying into the course's bias-mitigation module.   
 - Pretrained embeddings: swap TF-IDF for transformer sentence-embeddings and quantify the lift.   
 - Make the demo interactive/explainable: in the deployed app, let users paraphrase text and watch the prediction flip in real time, or highlight which words pushed the model toward "AI" vs. "human" — turning the robustness finding into something a viewer can actually feel.
 
@@ -82,73 +63,112 @@ Use these milestones to guide your work. Your team will create a **GitHub Projec
 
 **Note for the team:** Please create a GitHub Projects board in this repository to break these milestones into weekly tasks. Go to the **Projects** tab → **New project** → Choose **Board** → Add columns for each month.
 
----
 
 ## 📊 Dataset
 
-**Name and Source:** HC3 dataset, available via Hugging Face  
-**Format:** CSV/TSV, JSON  
-**Size:** under 1gb  
-**Location:** https://huggingface.co/datasets/Hello-SimpleAI/HC3
+**Name and Source:** HC3 — Human ChatGPT Comparison Corpus (English), available via Hugging Face  
+**Format:** JSONL on the Hub (auto-converted to Parquet); we provide a prepared CSV via a script  
+**Size:** ~147 MB (≈24,300 questions; ~85k+ answers once expanded) — well under 1 GB  
+**Location:** https://huggingface.co/datasets/Hello-SimpleAI/HC3  
+**In this repo:** see the [`data/`](data) folder — a small committed preview (`data/hc3_sample.csv`), a `download_hc3.py` script to pull the full set, and a [data dictionary](data/README.md).
 
-### Key Details
-- [Any known limitations or preprocessing needed]
-- [Link to data dictionary or documentation, if available]
+### How to get the data
+A tiny 42-row preview is committed so you can see the format immediately. To pull the full set look into data/README.md
 
----
+### Key details — limitations & preprocessing
+- **Explode the nested lists first.** `human_answers` and `chatgpt_answers` are *lists* per question — flatten to one row per answer with a `0/1` label before modeling. 
+- **Split by question, not by answer.** The same question appears on both the human and AI side, so an answer-level random split leaks topics across train/test and inflates scores. Group by `question` (or `id`) when splitting.
+- **Length is a confound.** ChatGPT answers are systematically longer and more uniform, so a classifier can "cheat" by learning length instead of AI-ness — exactly the weakness the paraphrase-robustness experiment is meant to expose. Watch for it in EDA and error analysis.
+- **Model drift.** The AI answers are GPT-3.5-era (early 2023); a detector trained on HC3 may not generalize to newer models.
+- **Documentation:** [paper (arXiv:2301.07597)](https://arxiv.org/abs/2301.07597)
+
 
 ## 🛠️ Suggested Approach
 
 **ML Problem Type:** Classification, NLP, Deep Learning / Neural Networks, Large Language Models (LLMs)/ Generative AI, Transfer Learning / Pre-trained Models
 
-**Recommended Libraries:**
-- [e.g., pandas, scikit-learn, TensorFlow, Hugging Face]
+**Recommended Libraries:** *(all free, all run on Google Colab — no local setup or GPU required)*
+
+| Phase | Libraries | What you'll use them for |
+|-------|-----------|--------------------------|
+| Data & EDA | `datasets` (Hugging Face), `pandas`, `numpy`, `matplotlib` / `seaborn` | Pull HC3 from the Hub, explode the answer lists, and chart human-vs-AI differences (length, vocabulary, punctuation). |
+| Text features | `scikit-learn` (`TfidfVectorizer`, `CountVectorizer`), `nltk` *(optional)* | Turn text into numeric features (TF-IDF); optional tokenization/stopword tools. |
+| Classic models | `scikit-learn` (`LogisticRegression`, `DecisionTreeClassifier`, `KNeighborsClassifier`) | The baseline detectors and the primary logistic-regression model. |
+| Deep model | `tensorflow` / `keras` | The feedforward neural network to compare against the baselines. |
+| Evaluation | `scikit-learn.metrics`, `matplotlib` | Accuracy, precision/recall, macro-F1, confusion matrix, and the robustness curve. |
+| Save / serve | `joblib` or `pickle`, `fastapi` *(optional)*, `streamlit` | Save the trained model, wrap it in an API, and build the demo web app. |
+| Stretch (embeddings / paraphrasing) | `sentence-transformers`, `transformers` | Swap TF-IDF for transformer embeddings; generate "humanized"/paraphrased test cases. |
+
+> Start simple: `pandas` + `scikit-learn` gets you a working detector. Only add Keras once the baseline works, and treat `sentence-transformers`/`transformers` as stretch goals.
 
 **Evaluation Metrics:**
-- [e.g., Accuracy, Precision/Recall, RMSE, BLEU score]
+- **Macro-F1** — the primary metric. Averages the F1 of the "human" and "AI" classes equally, so the model can't win just by favoring the bigger class.
+- **Accuracy** — easy to read, but always report it *next to a majority-class baseline* (predicting the most common label) so you can see the real lift.
+- **Precision & Recall (per class)** — precision = "when it says AI, how often is it right"; recall = "of all AI text, how much did it catch." Report both for each class.
+- **Confusion matrix** — the 2×2 grid of human/AI predictions vs. truth; the fastest way to see *how* the model fails.
+- **Robustness curve (the distinctive metric)** — accuracy / macro-F1 measured as the AI text is progressively paraphrased, plus a **per-domain breakdown** (does it hold up on medicine vs. finance vs. ELI5?). This is the real-world insight the project is built around.
+- *(Optional, for a probability-based view)* **ROC-AUC** — how well the model's confidence separates the two classes regardless of threshold.
 
----
 
 ## 📚 Resources to Get Started
 
 The following resources will help your team understand the problem space and potential technical approaches for this project:
 
 **Background Reading:**
-- [Link to an article or blog post about the problem domain]
-- [Link to an industry report or case study]
+- [AI Detectors Are Biased Against Non-Native English Writers (Stanford HAI)](https://hai.stanford.edu/news/ai-detectors-biased-against-non-native-english-writers) — a short, accessible explainer on *why* AI-text detectors are unreliable and unfair; sets up the exact real-world question your robustness experiment investigates.
+- [OpenAI Scuttles Its AI-Written Text Detector Over "Low Rate of Accuracy" (TechCrunch)](https://techcrunch.com/2023/07/25/openai-scuttles-ai-written-text-detector-over-low-rate-of-accuracy/) — a real-world case study: even OpenAI shut down its own detector, motivating why measuring where detectors *fail* is the interesting part of this project.
 
 **Technical Tutorials:**
-- [Link to a free tutorial on the ML technique(s) involved]
-- [Link to documentation for a key library or tool]
+- [Working With Text Data (scikit-learn tutorial)](https://scikit-learn.org/1.4/tutorial/text_analytics/working_with_text_data.html) — walks through the core pipeline for this project: turning text into TF-IDF features and training/evaluating a classifier.
+- [TfidfVectorizer API reference (scikit-learn)](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html) — the official docs for the exact tool you'll use to build features; see `ngram_range`, `min_df`, `max_features`, and `stop_words`.
+- [Basic Text Classification (TensorFlow/Keras tutorial)](https://www.tensorflow.org/tutorials/keras/text_classification) — an end-to-end binary text classifier in Keras, the template for the feedforward neural network you'll compare against the baselines.
+- [Get Started with Streamlit (official docs)](https://docs.streamlit.io/get-started) — install, build your first app, and run it; this is how you'll turn the trained model into the live "human vs. AI" demo.
 
 **Code Examples:**
-- [Link to a relevant GitHub repo]
-- [Link to a sample implementation or starter code]
+- [HC3 dataset card on Hugging Face](https://huggingface.co/datasets/Hello-SimpleAI/HC3) — the dataset home page with ready-to-copy `datasets` loading code and a description of every field you'll work with.
+- [Hello-SimpleAI/chatgpt-comparison-detection (GitHub)](https://github.com/Hello-SimpleAI/chatgpt-comparison-detection) — the official HC3 repo with the authors' own detectors (QA, single-text, and linguistic-feature versions) as reference implementations.
+- [Host a Streamlit app on Hugging Face Spaces](https://huggingface.co/docs/hub/spaces-sdks-streamlit) — a complete starter example (a small classifier app) showing how to deploy your demo for free, including the `app.py` and `requirements.txt` setup.
 
 **Other:**
-- [Links to any additional resources — e.g., papers, videos, podcasts, etc.]
+- [How Close is ChatGPT to Human Experts? Comparison Corpus, Evaluation, and Detection (arXiv:2301.07597)](https://arxiv.org/abs/2301.07597) — the HC3 paper: how the dataset was built, what distinguishes human vs. ChatGPT answers, and the detection experiments your project extends.
 
 *Feel free to explore beyond these, and share anything interesting you find with me!*
 
----
 
 ## 🤝 How We'll Work Together
 
 **Official check-ins:** During our biweekly 45-minute AI Studio Lab Section meeting block (2nd and 4th week of every month)
 
  **Other ways to reach out to me with questions:** 
-* [e.g., Your team's channel within Break Through Tech’s Discord space]
-* [e.g., Email; please copy your teammates and AI Studio Coach]
-* [e.g., Request a team check-in on Zoom]
-* [Note: I will aim to respond within 48 hours. Please reach out to your AI Studio Coach with urgent questions.]
-
-> 💡 **Challenge Advisor: Please update the above based on your availability and preference. If you are not able to answer questions or meet with fellows outside of the biweekly Lab Section check-ins, simply write in "N/A (only available during the official check-in times)"**
+* **Discord** — message me in our team channel within Break Through Tech's Discord space.
+* **Email** — rishab1300@gmail.com (please copy your teammates and AI Studio Coach).
+* I'll try to respond as soon as possible. For urgent questions, please also reach out to your AI Studio Coach.
 
 **Recommended free coding / collaboration tools**
-* […]
-* […]
+All free and runnable on a school laptop — no paid services or GPU purchase required.
 
----
+**Coding & compute**
+- **Google Colab** — free cloud notebooks (with GPU) for EDA, feature engineering, and train
+ing; opens directly from GitHub, so there's nothing to install locally.
+- **VS Code** *(optional)* — a full editor for writing the Streamlit / API app instead of no
+tebook cells.
+
+**Core Python libraries**
+- **pandas / numpy** — load and reshape the HC3 data.
+- **scikit-learn** — TF-IDF features and the baseline models (logistic regression, decision
+tree, k-NN) plus all evaluation metrics.
+- **TensorFlow / Keras** — the feedforward neural network.
+- **matplotlib / seaborn** — EDA charts, the confusion matrix, and the robustness curve.
+- **Hugging Face `datasets`** — download the HC3 dataset from the Hub.
+
+**Deployment / hosting (the demo)**
+- **Streamlit** + **Streamlit Community Cloud** — build and host the "paste text → human vs.
+ AI" app for free.
+
+**Collaboration**
+- **Discord** — the team's day-to-day chat channel.
+- **GitHub Issues + Projects** — task tracking and weekly planning.
+
 
 ## 🚀 Getting Started
 
