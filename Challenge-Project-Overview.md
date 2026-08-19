@@ -1,23 +1,3 @@
-
-## 📋 BTT Internal Evaluation Notes
-*(This section is for BTT staff only — remove before sharing with students)*
-
-| Check | Status | Notes |
-|-------|--------|-------|
-| Python Compatibility | 🟢 | The tech stack is primarily Python-based, utilizing libraries such as Keras and FastAPI, making it suitable for student proficiency. |
-| Data Readiness | 🟢 | The HC3 dataset is readily accessible and under 1GB, minimizing preprocessing time and enabling a focus on modeling. |
-| Resource Check | 🟢 | All required tools and libraries can be accessed via free-tier services like Google Colab, ensuring no hardware constraints for students. |
-
-**Student Fit Score:** 8/10  
-**Technical Depth Score:** 7/10  
-**Overall Recommendation:** APPROVE
-
-**Advisor Feedback Draft:**
-
-The project leverages relevant methodologies in NLP and classifier development, but the complexity of measuring robustness against diverse paraphrasing could challenge students' analytical skills. It is vital to clearly define the scope of the robustness analysis to ensure appropriate student engagement.
-
----
-
 # Spot the Bot: Detecting AI-Generated Text
 
 **Company / Org:** Chewy.com  
