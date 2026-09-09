@@ -15,6 +15,7 @@
 | Amina Hassan     | @aminahassan  | Data preprocessing, feature engineering, data validation                 |
 | Priya Mehta      | @pmehta       | Model selection, hyperparameter tuning, model training and optimization  |
 | Khanh-Thu Ngo       | @Clementine27    | Model evaluation, performance analysis, results interpretation           |
+| Tom Nguyen | @matchalatte2609 | Turned coffee into commits, occasionally useful             |
 
 ---
 
