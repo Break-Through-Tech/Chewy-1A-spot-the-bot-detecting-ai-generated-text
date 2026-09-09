@@ -13,7 +13,7 @@
 | Ronald Wen    | @ronaldw07 | Data exploration, visualization, overall project coordination            |
 | Melinda Tran   | @MelindaTan     | Data collection, exploratory data analysis (EDA), dataset documentation  |
 | Amina Hassan     | @aminahassan  | Data preprocessing, feature engineering, data validation                 |
-| Priya Mehta      | @pmehta       | Model selection, hyperparameter tuning, model training and optimization  |
+| Eliza Lamar      | @elizalamarr       | Model selection, hyperparameter tuning, model training and optimization  |
 | Khanh-Thu Ngo       | @Clementine27    | Model evaluation, performance analysis, results interpretation           |
 | Tom Nguyen | @matchalatte2609 | Turned coffee into commits, occasionally useful             |
 
