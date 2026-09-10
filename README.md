@@ -6,9 +6,8 @@
 
 ### 👥 **Team Members**
 
-**Example:**
 
-| Name             | GitHub Handle | Contribution                                                             |
+| Name             | GitHub Handle | Contribution (TBD)                                                            |
 |------------------|---------------|--------------------------------------------------------------------------|
 | Ronald Wen    | @ronaldw07 | Data exploration, visualization, overall project coordination            |
 | Melinda Tran   | @MelindaTan     | Data collection, exploratory data analysis (EDA), dataset documentation  |
