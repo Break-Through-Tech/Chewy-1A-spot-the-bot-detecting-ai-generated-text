@@ -17,6 +17,7 @@
 | Khanh-Thu Ngo       | @Clementine27    | Model evaluation, performance analysis, results interpretation           |
 | Tom Nguyen | @matchalatte2609 | Turned coffee into commits, occasionally useful             |
 | Harsha Minakanti | @harzhaa | Data preprocessing, feature engineering, model development          |
+| Ziri Ekpe | @Ziri06 |          |
 
 ---
 
