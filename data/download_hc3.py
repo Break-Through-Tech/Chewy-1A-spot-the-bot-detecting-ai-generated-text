@@ -14,17 +14,19 @@ Raw structure (one row per question)
 Heads-up: `human_answers` and `chatgpt_answers` are LISTS (a question can have
 several answers).
 """
-from datasets import load_dataset
+from pathlib import Path
+import sys
 
-OUT_PATH = "data/hc3_all.csv"
+OUT_PATH = Path(__file__).resolve().parent / "hc3_all.csv"
+REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT / "src"))
+
+from spotbot.data import load_hc3_from_huggingface
 
 
 def main():
-    # `trust_remote_code=True` is required: HC3 ships a small custom loading
-    # script. If your `datasets` version complains, upgrade it, or load the
-    # auto-generated Parquet mirror instead (see data/README.md).
-    ds = load_dataset("Hello-SimpleAI/HC3", "all", trust_remote_code=True)
-    df = ds["train"].to_pandas()
+    # The shared loader handles the normal datasets path and its JSONL fallback.
+    df = load_hc3_from_huggingface("all")
 
     df.to_csv(OUT_PATH, index=False)
     print(f"Saved {len(df):,} rows (one per question) to {OUT_PATH}")

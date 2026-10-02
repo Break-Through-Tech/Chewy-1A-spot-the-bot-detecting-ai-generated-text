@@ -1,10 +1,33 @@
 # Full/generated dataset — pull it with data/download_hc3.py, don't commit it (~147 MB)
 data/hc3_all.csv
+data/processed/
+data/interim/
+data/splits/
+data/*.parquet
+data/*.jsonl
+data/*_prepared.csv
+data/*_expanded.csv
 
 # Python
 __pycache__/
 *.pyc
+.pytest_cache/
 .ipynb_checkpoints/
 .venv/
 venv/
+env/
 .env
+.env.*
+
+# OS/editor files
+.DS_Store
+
+# Model artifacts generated in later phases
+models/
+artifacts/
+*.joblib
+*.pkl
+*.pickle
+*.keras
+*.h5
+*.onnx

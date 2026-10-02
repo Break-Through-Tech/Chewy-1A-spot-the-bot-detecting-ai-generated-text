@@ -1,123 +1,154 @@
 # Spot the Bot: Detecting AI-Generated Text
 
-> 💡 **Note for the team:** This is just a template. Update the above title with your AI Studio Challenge Project name. Remove all guidance notes and example text in this template and populate this README with your own content. You can work on this README throughout AI Studio, and get feedback from your AI Studio Coach and Challenge Advisor before finalizing it.  
+This Break Through Tech AI Studio project builds a human-vs-AI text classifier
+using the HC3 Human ChatGPT Comparison Corpus. The September milestone focuses
+on data understanding and preparation: reproducible HC3 loading, data-quality
+checks, question-group train/validation/test splitting, answer expansion,
+leakage checks, and EDA.
 
----
+The manager/advisor-provided project scope and future milestones live in
+[`Challenge-Project-Overview.md`](Challenge-Project-Overview.md).
 
-### 👥 **Team Members**
+## Team Members
 
+| Name | GitHub Handle | Contribution |
+|---|---|---|
+| Ronald Wen | @ronaldw07 | Data exploration, visualization, overall project coordination |
+| Melinda Tran | @MelindaTan | Data collection, exploratory data analysis (EDA), dataset documentation |
+| Aryaman Mehra | @Aryaman0333 | Data preprocessing, feature engineering, data validation |
+| Eliza Lamar | @elizalamarr | Model selection, hyperparameter tuning, model training and optimization |
+| Khanh-Thu Ngo | @Clementine27 | Model evaluation, performance analysis, results interpretation |
+| Tom Nguyen | @matchalatte2609 | Project contributions |
+| Harsha Minakanti | @harzhaa | Data preprocessing, feature engineering, model development |
+| Ziri Ekpe | @Ziri06 | TBD |
 
-| Name             | GitHub Handle | Contribution (TBD)                                                            |
-|------------------|---------------|--------------------------------------------------------------------------|
-| Ronald Wen    | @ronaldw07 | Data exploration, visualization, overall project coordination            |
-| Melinda Tran   | @MelindaTan     | Data collection, exploratory data analysis (EDA), dataset documentation  |
-| Aryaman Mehra    | @Aryaman0333  | Data preprocessing, feature engineering, data validation                 |
-| Eliza Lamar      | @elizalamarr       | Model selection, hyperparameter tuning, model training and optimization  |
-| Khanh-Thu Ngo       | @Clementine27    | Model evaluation, performance analysis, results interpretation           |
-| Tom Nguyen | @matchalatte2609 | Turned coffee into commits, occasionally useful             |
-| Harsha Minakanti | @harzhaa | Data preprocessing, feature engineering, model development          |
-| Ziri Ekpe | @Ziri06 |          |
+## Current September Status
 
----
+Implemented September data-preparation pieces:
 
-## 🎯 **Project Highlights**
+- Reusable `src/spotbot` package for HC3 loading, preprocessing, duplicate-question resolution, splitting, expansion, and leakage checks.
+- Question-group split before answer expansion with `random_state=42`.
+- Stratification by HC3 `source` domain.
+- Stable `question_group_id` based on normalized question text.
+- Conservative removal of clear HC3 collection/system artifacts such as rate-limit, auth, network, and ChatGPT UI page contamination.
+- Exact shared-answer components used as atomic split units to prevent direct answer-text leakage across train/validation/test.
+- Answer-level expansion with `label = 0` for human answers and `label = 1` for AI answers.
+- Explicit handling for empty answer lists and blank individual answers.
+- Duplicate normalized-question investigation before deterministic grouping.
+- Tests for the core data-preparation invariants.
+- Notebook narrative for September EDA and TF-IDF feature-preparation checks.
 
-**Example:**
+October modeling, neural networks, robustness experiments, deployment, Streamlit,
+and API work are intentionally out of scope for this cleanup.
 
-- Developed a machine learning model using `[model type/technique]` to address `[challenge project task]`.
-- Achieved `[key metric or result]`, demonstrating `[value or impact]` for `[host company]`.
-- Generated actionable insights to inform business decisions at `[host company or stakeholders]`.
-- Implemented `[specific methodology]` to address industry constraints or expectations.
+## Repository Structure
 
----
+```text
+.
+├── Challenge-Project-Overview.md    # Advisor-provided requirements and milestones
+├── Getting-Started-for-Fellows.md   # Original program onboarding notes
+├── README.md                        # Project setup and September status
+├── data/
+│   ├── README.md                    # Raw vs expanded data documentation
+│   ├── download_hc3.py              # Downloads raw HC3 to data/hc3_all.csv
+│   └── hc3_sample.csv               # Small committed expanded preview
+├── notebooks/
+│   └── Chewy_1A.ipynb               # September EDA/data-prep narrative
+├── src/
+│   └── spotbot/                     # Reusable September pipeline code
+├── tests/                           # Synthetic tests; no HC3 download required
+├── pytest.ini
+└── requirements.txt
+```
 
-## 👩🏽‍💻 **Setup and Installation**
+## Setup
 
-**Provide step-by-step instructions so someone else can run your code and reproduce your results. Depending on your setup, include:**
+Use Python 3.10 or newer.
 
-* How to clone the repository
-* How to install dependencies
-* How to set up the environment
-* How to access the dataset(s)
-* How to run the notebook or scripts
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
----
+## Getting HC3
 
-## 🏗️ **Project Overview**
+The full HC3 dataset is not committed to this repository. Download it from
+Hugging Face:
 
-**Describe:**
+```bash
+python data/download_hc3.py
+```
 
-- How this project is connected to the Break Through Tech AI Program
-- Your AI Studio host company and the project objective and scope
-- The real-world significance of the problem and the potential impact of your work
+This writes `data/hc3_all.csv`, a raw question-level file ignored by Git. See
+[`data/README.md`](data/README.md) for the raw and expanded schemas.
 
----
+## Canonical Preprocessing
 
-## 📊 **Data Exploration**
+The September pipeline order is:
 
-**You might consider describing the following (as applicable):**
+1. Load raw HC3.
+2. Validate required schema.
+3. Normalize question text and answer text.
+4. Validate `human_answers` and `chatgpt_answers` as lists.
+5. Remove question rows with empty human or AI answer lists.
+6. Investigate duplicate normalized-question groups.
+7. Resolve duplicate questions deterministically, preserving distinct answers and de-duplicating identical answers within each label class.
+8. Remove only clear invalid collection/system answer artifacts with explicit deterministic rules.
+9. Link question groups that share exact normalized answer text into answer components.
+10. Split answer components into train/validation/test at approximately 80/10/10 using `random_state=42`, stratified by `source`.
+11. Expand answers after splitting.
+12. Remove blank individual answers during expansion.
+13. Validate labels, preserved group/component IDs, zero question overlap, zero exact answer-text overlap, and zero component overlap across splits.
+14. Calculate EDA statistics and train-only TF-IDF features where needed.
 
-* The dataset(s) used: origin, format, size, type of data
-* Data exploration and preprocessing approaches
-* Insights from your Exploratory Data Analysis (EDA)
-* Challenges and assumptions when working with the dataset(s)
+No normalized question group, exact answer text, or answer-linked component
+should appear in more than one split. Learned preprocessing such as TF-IDF must
+be fit only on training text.
 
-**Potential visualizations to include:**
+## Label Convention
 
-* Plots, charts, heatmaps, feature visualizations, sample dataset images
+At the expanded answer level:
 
----
+- `label = 0`: human-written answer
+- `label = 1`: ChatGPT/AI-generated answer
 
-## 🧠 **Model Development**
+The committed `data/hc3_sample.csv` also includes a string `label` column
+(`human`/`ai`) and a numeric `target` column (`0`/`1`). Treat `target` as the
+sample file's numeric label.
 
-**You might consider describing the following (as applicable):**
+## Tests
 
-* Model(s) used (e.g., CNN with transfer learning, regression models)
-* Feature selection and Hyperparameter tuning strategies
-* Training setup (e.g., % of data for training/validation, evaluation metric, baseline performance)
+Run the synthetic test suite:
 
+```bash
+pytest
+```
 
----
+The tests do not download HC3. They cover normalization, empty answer lists,
+blank answers, invalid system artifacts, duplicate question handling,
+answer-linked component construction, deterministic splitting, split isolation,
+split-before-expand behavior, labels, group/component ID preservation, and
+source consistency.
 
-## 📈 **Results & Key Findings**
+## Notebook
 
-**You might consider describing the following (as applicable):**
+Open and run:
 
-* Performance metrics (e.g., Accuracy, F1 score, RMSE)
-* How your model performed
-* Insights from evaluating model fairness
+```text
+notebooks/Chewy_1A.ipynb
+```
 
-**Potential visualizations to include:**
+The notebook is the September EDA narrative. It should use the reusable
+`spotbot` pipeline rather than keeping a second copy of preprocessing logic in
+notebook cells.
 
-* Confusion matrix, precision-recall curve, feature importance plot, prediction distribution, outputs from fairness or explainability tools
+## Dataset Limitations
 
----
-
-## 🚀 **Next Steps**
-
-**You might consider addressing the following (as applicable):**
-
-* What are some of the limitations of your model?
-* What would you do differently with more time/resources?
-* What additional datasets or techniques would you explore?
-
----
-
-## 📝 **License**
-
-Specify how your project can be used by others. Choose an appropriate license and link it here (e.g., MIT, Apache 2.0). Make sure your Challenge Advisor approves of the selected license type. 
-
-**Example:**
-This project is licensed under the MIT License.
-
----
-
-## 📄 **References** (Optional but encouraged)
-
-Cite relevant papers, articles, or resources that supported your project.
-
----
-
-## 🙏 **Acknowledgements** (Optional but encouraged)
-
-Thank your Challenge Advisor, host company representatives, TA, and others who supported your project.
+- HC3 answers come from early-2023 ChatGPT-era generations, so model drift is a risk.
+- Human and AI answer lengths differ substantially; length is a known confound and should be measured, not silently removed.
+- HC3 contains multiple domains with uneven representation, especially Reddit ELI5.
+- Duplicate normalized questions exist and must be resolved at the group level before splitting.
+- Some HC3 rows contain upstream collection artifacts or misaligned answer content; the September policy removes only clear system artifacts and documents suspicious data-quality cases rather than manually repairing them.
+- Exact human answers can recur under near-duplicate questions, so the canonical split keeps answer-linked question components together.
+- The held-out test split should not be used for model or hyperparameter selection.
