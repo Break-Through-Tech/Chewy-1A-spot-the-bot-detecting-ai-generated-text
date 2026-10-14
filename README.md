@@ -20,7 +20,7 @@ The manager/advisor-provided project scope and future milestones live in
 | Khanh-Thu Ngo | @Clementine27 | Model evaluation, performance analysis, results interpretation |
 | Tom Nguyen | @matchalatte2609 | Project contributions |
 | Harsha Minakanti | @harzhaa | Data preprocessing, feature engineering, model development |
-| Ziri Ekpe | @Ziri06 | TBD |
+| Ziri Ekpe | @Ziri06 | Data preprocessing, model development, performance analysis  |
 
 ## Current September Status
 
