@@ -143,6 +143,53 @@ The notebook is the September EDA narrative. It should use the reusable
 `spotbot` pipeline rather than keeping a second copy of preprocessing logic in
 notebook cells.
 
+## Milestone 2: Shared Setup
+
+1. Pull the latest main, then create your own feature branch.
+2. Create a new model notebook, for example `02_logistic_regression.ipynb`,
+   `03_linear_svm.ipynb`, `04_decision_tree.ipynb`, or `05_neural_network.ipynb`.
+   Keep `Chewy_1A.ipynb` for Milestone 1 data preparation.
+3. Load the frozen September splits with the helper below. Do not create another split.
+4. Fit features and models on training data, and use validation to choose settings.
+   Use test only for final evaluation after the model settings have been chosen.
+5. Use the shared evaluation helper, then commit your work to your branch and open a PR.
+
+From a notebook running in `notebooks/`:
+
+```python
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path.cwd().parent / "src"))
+
+from spotbot.prepared import load_prepared_splits
+from spotbot.evaluation import evaluate_predictions
+
+train_df, val_df, test_df = load_prepared_splits()
+# After your model predicts validation labels in val_df row order:
+scores = evaluate_predictions(val_df["label"], val_predictions, val_df["source"])
+print(scores["macro_f1"], scores["accuracy"])
+display(scores["per_class"])
+print(scores["confusion_matrix"])
+print(scores["per_domain"])
+```
+
+The loader reads local `data/hc3_all.csv` (or downloads HC3 if absent), runs the
+September cleaning steps, and applies the committed files in `data/splits/`.
+It never makes a new random split. Counts are train **65,401**, validation
+**8,218**, and test **8,151** answers. A content fingerprint catches changed
+input data; missing/overlapping IDs or leakage cause an error.
+
+Macro F1 is the primary score. The helper also returns accuracy, per-class
+precision/recall/F1/support, a confusion matrix (rows=true, columns=predicted,
+label order human=0 then AI=1), and the same metrics per domain. Missing-class
+and undefined scores use zero, with both labels included in macro F1.
+
+Our dataset is about **68% human and 32% AI**, so predicting human every time
+would already give about 68% accuracy. Compare models using macro-F1 and
+precision/recall for both classes, not accuracy alone. You may use class
+weighting during model training; choose those settings using validation and
+keep validation/test in their natural class proportions.
+
 ## Dataset Limitations
 
 - HC3 answers come from early-2023 ChatGPT-era generations, so model drift is a risk.
