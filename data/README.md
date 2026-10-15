@@ -84,7 +84,19 @@ creates one row per answer.
 | `label` | int | `0` for human answers, `1` for AI answers. |
 | `answer_index` | int | Position within the human or AI answer list after duplicate question resolution. |
 
-### Sample CSV label convention
+### Frozen September Memberships
+
+`data/splits/train_ids.csv`, `val_ids.csv`, and `test_ids.csv` contain only
+question group IDs and source names. They preserve the validated split from
+commit `58bdf0b`: 18,671 / 2,343 / 2,325 groups, yielding 65,401 / 8,218 / 8,151
+answers. These are our processed counts, not raw HC3 counts.
+
+`manifest.json` records expected class counts and a SHA-256 fingerprint of the
+cleaned question/answer content. `spotbot.prepared.load_prepared_splits()`
+checks these files and reconstructs the datasets without splitting again.
+Regenerating memberships requires a separately reviewed methodology change.
+
+### Sample CSV Label Convention
 
 `hc3_sample.csv` predates the reusable pipeline and uses both:
 
