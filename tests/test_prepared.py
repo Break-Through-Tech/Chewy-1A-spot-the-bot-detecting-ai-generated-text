@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -53,6 +54,23 @@ def test_loader_reconstructs_saved_splits_without_random_split(saved_fixture, mo
     assert all(count == 0 for count in verify_split_isolation(reconstructed).values())
     assert all(count == 0 for count in verify_component_isolation(reconstructed).values())
     assert all(count == 0 for count in verify_answer_text_isolation(reconstructed).values())
+
+
+def test_loader_preserves_frozen_results_for_huggingface_arrays(saved_fixture, monkeypatch):
+    from spotbot.data import load_hc3_csv
+
+    _, _, path, folder = saved_fixture
+    expected = load_prepared_splits(path, folder)
+    raw = load_hc3_csv(path)
+    for column in ["human_answers", "chatgpt_answers"]:
+        raw[column] = raw[column].apply(lambda answers: np.array(answers, dtype=object))
+    monkeypatch.setattr("spotbot.prepared.load_hc3_from_huggingface", lambda: raw)
+    monkeypatch.setattr("spotbot.prepared.REPO_ROOT", folder / "without_local_hc3")
+
+    actual = load_prepared_splits(split_dir=folder)
+
+    for expected_frame, actual_frame in zip(expected, actual):
+        pd.testing.assert_frame_equal(actual_frame, expected_frame)
 
 
 @pytest.mark.parametrize("problem", ["repeat", "overlap", "missing", "component"])
