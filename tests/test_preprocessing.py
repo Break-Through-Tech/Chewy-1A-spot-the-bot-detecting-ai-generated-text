@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -13,6 +14,62 @@ from spotbot.preprocessing import (
 
 def test_normalize_text_preserves_case_and_collapses_whitespace():
     assert normalize_text("  What\u00a0is\tAI?\n") == "What is AI?"
+
+
+@pytest.mark.parametrize("human_container", [list, np.array])
+@pytest.mark.parametrize("ai_container", [list, np.array])
+def test_answer_containers_normalize_to_python_lists(human_container, ai_container):
+    raw = pd.DataFrame([{
+        "question": " Q1 ", "source": "open_qa",
+        "human_answers": human_container([" human ", "second human"]),
+        "chatgpt_answers": ai_container([" ai "]),
+    }])
+    normalized, report = normalize_raw_hc3(raw)
+
+    assert report.invalid_answer_list_rows == 0
+    assert report.empty_answer_list_rows == 0
+    assert normalized.iloc[0]["human_answers"] == ["human", "second human"]
+    assert normalized.iloc[0]["chatgpt_answers"] == ["ai"]
+    assert type(normalized.iloc[0]["human_answers"]) is list
+    assert type(normalized.iloc[0]["chatgpt_answers"]) is list
+
+
+@pytest.mark.parametrize("container", [list, np.array])
+@pytest.mark.parametrize("column", ["human_answers", "chatgpt_answers"])
+def test_empty_supported_containers_are_counted_as_empty_lists(container, column):
+    raw = pd.DataFrame([
+        {"question": "valid", "source": "open_qa",
+         "human_answers": ["human"], "chatgpt_answers": ["ai"]},
+        {"question": "empty", "source": "open_qa",
+         "human_answers": container(["human"]), "chatgpt_answers": container(["ai"])},
+    ])
+    raw.at[1, column] = container([])
+    normalized, report = normalize_raw_hc3(raw)
+    assert report.invalid_answer_list_rows == 0
+    assert report.empty_answer_list_rows == 1
+    assert normalized["question"].tolist() == ["valid"]
+
+
+@pytest.mark.parametrize("invalid", [
+    "answer", ("answer",), {"answer"}, {"answer": "text"}, None,
+    ["answer", 42], ["answer", None], [["nested"]],
+    np.array(["answer", 42], dtype=object), np.array(["answer", None], dtype=object),
+    np.array([1, 2]), np.array("scalar"), np.array([["nested"]]), np.empty((0, 2)),
+    iter(["answer"]),
+])
+@pytest.mark.parametrize("column", ["human_answers", "chatgpt_answers"])
+def test_invalid_containers_and_non_string_items_remain_invalid(invalid, column):
+    raw = pd.DataFrame([
+        {"question": "valid", "source": "open_qa",
+         "human_answers": ["human"], "chatgpt_answers": ["ai"]},
+        {"question": "invalid", "source": "open_qa",
+         "human_answers": ["human"], "chatgpt_answers": ["ai"]},
+    ])
+    raw.at[1, column] = invalid
+    normalized, report = normalize_raw_hc3(raw)
+    assert report.invalid_answer_list_rows == 1
+    assert report.empty_answer_list_rows == 0
+    assert normalized["question"].tolist() == ["valid"]
 
 
 def test_empty_answer_lists_are_removed_at_question_level():
