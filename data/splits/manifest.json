@@ -1,0 +1,30 @@
+{
+  "reference_commit": "58bdf0bbc25fa95b5aa2fa85689a094a3aa361bb",
+  "prepared_sha256": "89d61fb530fa44d8ab0a696b2fd23ad0e427bd8847d1d4083439af0a0f905046",
+  "splits": {
+    "train": {
+      "question_groups": 18671,
+      "examples": 65401,
+      "label_counts": {
+        "0": 44473,
+        "1": 20928
+      }
+    },
+    "validation": {
+      "question_groups": 2343,
+      "examples": 8218,
+      "label_counts": {
+        "0": 5587,
+        "1": 2631
+      }
+    },
+    "test": {
+      "question_groups": 2325,
+      "examples": 8151,
+      "label_counts": {
+        "0": 5536,
+        "1": 2615
+      }
+    }
+  }
+}
