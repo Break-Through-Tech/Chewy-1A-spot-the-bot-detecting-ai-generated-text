@@ -221,6 +221,7 @@ using validation. Leave AUC blank if it was not calculated.
 | Linear SVM | | | | | | | |
 | Decision Tree | 0.8918 | 0.9049 | 0.9362 | 0.9229 | 0.8415 | 0.8669 | |
 | Neural Network | 0.9791 | 0.9817 | 0.9888 | 0.9843 | 0.9670 | 0.9763 | |
+| Gradient Boosting | 0.9662 | 0.9707 | 0.98 | 0.98 | 0.96 | 0.95 | |
 
 ## Dataset Limitations
 
