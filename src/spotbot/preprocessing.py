@@ -8,6 +8,7 @@ import unicodedata
 from collections import Counter
 from dataclasses import dataclass
 
+import numpy as np
 import pandas as pd
 
 from .data import LIST_COLUMNS, validate_hc3_schema
@@ -65,7 +66,12 @@ def question_group_id(question_norm: str) -> str:
 
 
 def _is_answer_list(value: object) -> bool:
-    return isinstance(value, list) and all(isinstance(item, str) for item in value)
+    if isinstance(value, np.ndarray):
+        if value.ndim != 1:
+            return False
+    elif not isinstance(value, list):
+        return False
+    return all(isinstance(item, str) for item in value)
 
 
 def _normalize_answer_list(values: list[str]) -> list[str]:
@@ -173,6 +179,10 @@ def normalize_raw_hc3(df: pd.DataFrame) -> tuple[pd.DataFrame, DataQualityReport
     valid_list_mask = working[list(LIST_COLUMNS)].map(_is_answer_list).all(axis=1)
     invalid_answer_list_rows = int((~valid_list_mask).sum())
     working = working.loc[valid_list_mask].copy()
+
+    # Hugging Face can return NumPy arrays instead of lists.
+    for column in LIST_COLUMNS:
+        working[column] = working[column].apply(list)
 
     empty_mask = (working["human_answers"].str.len() == 0) | (working["chatgpt_answers"].str.len() == 0)
     empty_answer_list_rows = int(empty_mask.sum())
