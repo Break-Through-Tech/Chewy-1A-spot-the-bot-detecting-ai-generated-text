@@ -217,7 +217,7 @@ using validation. Leave AUC blank if it was not calculated.
 
 | Model | Macro-F1 | Accuracy | Human Precision | Human Recall | AI Precision | AI Recall | AUC |
 |-------|----------|----------|-----------------|--------------|--------------|-----------|-----|
-| Logistic Regression | | | | | | | |
+| Logistic Regression | 0.9761 | 0.9793 | 0.9783 | 0.9916 | 0.9816 | 0.9532 | |
 | Linear SVM | | | | | | | |
 | Decision Tree | 0.8918 | 0.9049 | 0.9362 | 0.9229 | 0.8415 | 0.8669 | |
 | Neural Network | 0.9791 | 0.9817 | 0.9888 | 0.9843 | 0.9670 | 0.9763 | |
