@@ -7,6 +7,11 @@ data/splits/*
 !data/splits/val_ids.csv
 !data/splits/test_ids.csv
 !data/splits/manifest.json
+data/splits_70_15_15/*
+!data/splits_70_15_15/train_ids.csv
+!data/splits_70_15_15/val_ids.csv
+!data/splits_70_15_15/test_ids.csv
+!data/splits_70_15_15/manifest.json
 data/*.parquet
 data/*.jsonl
 data/*_prepared.csv

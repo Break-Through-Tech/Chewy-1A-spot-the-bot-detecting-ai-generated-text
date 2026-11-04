@@ -96,6 +96,45 @@ cleaned question/answer content. `spotbot.prepared.load_prepared_splits()`
 checks these files and reconstructs the datasets without splitting again.
 Regenerating memberships requires a separately reviewed methodology change.
 
+### Experimental 70/15/15 Memberships
+
+The separate `data/splits_70_15_15/` directory is an experiment for comparing
+training-set sizes. It uses the same cleaned HC3 data, normalization, answer-linked
+components, source stratification, and seed (42) as our frozen September split.
+Only the requested proportions change to 70/15/15. Because components stay
+together, actual question and answer percentages are approximate.
+
+In Colab, after cloning this feature branch and adding `src` to the Python path:
+
+```python
+from spotbot.prepared import load_prepared_splits
+
+train_df, val_df, test_df = load_prepared_splits(split_version="70_15_15")
+# The team's default still loads the existing frozen 80/10/10 split:
+train_80, val_80, test_80 = load_prepared_splits()
+```
+
+Both versions have their own ID files and manifest. The experimental manifest
+records proportions, seed, prepared-data fingerprint, class/domain counts, and
+question/answer/component leakage checks. The loader applies saved memberships;
+it does not make a fresh split.
+
+To reproduce and verify the experiment from the repository root:
+
+```bash
+PYTHONPATH=src python -m spotbot.split_experiment --check
+```
+
+The same command without `--check` creates only the experimental files and
+refuses to overwrite different experimental memberships. It never writes to
+`data/splits/`. It uses local `data/hc3_all.csv`, or the shared Hugging Face
+loader when that file is absent; `--raw-path` can specify another raw HC3 CSV.
+
+This change alone does not establish whether a model overfits. No models were
+evaluated for this experiment. Treat its test set as held out; do not use test
+scores to choose a split or tune a model. Memberships overlap between versions,
+so the two test sets are not independent external datasets.
+
 ### Sample CSV Label Convention
 
 `hc3_sample.csv` predates the reusable pipeline and uses both:

@@ -1,0 +1,130 @@
+{
+  "split_version": "70_15_15",
+  "status": "experimental",
+  "reference_commit": "58bdf0bbc25fa95b5aa2fa85689a094a3aa361bb",
+  "prepared_sha256": "89d61fb530fa44d8ab0a696b2fd23ad0e427bd8847d1d4083439af0a0f905046",
+  "split_proportions": {
+    "train": 0.7,
+    "validation": 0.15,
+    "test": 0.15
+  },
+  "random_state": 42,
+  "split_unit": "answer_linked_component",
+  "stratification": "component source; same make_group_split implementation as 80/10/10",
+  "raw_question_rows": 24322,
+  "empty_list_question_rows_removed": 455,
+  "invalid_answer_list_rows_removed": 0,
+  "system_answers_removed": {
+    "human": {
+      "api_rate_limit": 1
+    },
+    "ai": {
+      "auth_failure": 24,
+      "chatgpt_ui_transcript": 55,
+      "api_rate_limit": 51,
+      "network_error": 29,
+      "chatgpt_security_page": 26
+    }
+  },
+  "blank_answers_removed": {
+    "human": 0,
+    "ai": 15
+  },
+  "question_groups": 23339,
+  "components": 22283,
+  "expanded_examples": 81770,
+  "all_groups_assigned_once": true,
+  "splits": {
+    "train": {
+      "question_groups": 16338,
+      "components": 15598,
+      "examples": 57246,
+      "label_counts": {
+        "0": 38930,
+        "1": 18316
+      },
+      "question_source_counts": {
+        "finance": 2753,
+        "medicine": 874,
+        "open_qa": 830,
+        "reddit_eli5": 11297,
+        "wiki_csai": 584
+      },
+      "answer_source_counts": {
+        "finance": 5853,
+        "medicine": 1781,
+        "open_qa": 3290,
+        "reddit_eli5": 45154,
+        "wiki_csai": 1168
+      }
+    },
+    "validation": {
+      "question_groups": 3502,
+      "components": 3342,
+      "examples": 12269,
+      "label_counts": {
+        "0": 8334,
+        "1": 3935
+      },
+      "question_source_counts": {
+        "finance": 590,
+        "medicine": 187,
+        "open_qa": 178,
+        "reddit_eli5": 2415,
+        "wiki_csai": 132
+      },
+      "answer_source_counts": {
+        "finance": 1264,
+        "medicine": 386,
+        "open_qa": 706,
+        "reddit_eli5": 9649,
+        "wiki_csai": 264
+      }
+    },
+    "test": {
+      "question_groups": 3499,
+      "components": 3343,
+      "examples": 12255,
+      "label_counts": {
+        "0": 8332,
+        "1": 3923
+      },
+      "question_source_counts": {
+        "finance": 590,
+        "medicine": 187,
+        "open_qa": 179,
+        "reddit_eli5": 2417,
+        "wiki_csai": 126
+      },
+      "answer_source_counts": {
+        "finance": 1262,
+        "medicine": 380,
+        "open_qa": 708,
+        "reddit_eli5": 9654,
+        "wiki_csai": 251
+      }
+    }
+  },
+  "leakage": {
+    "question_group": {
+      "train/validation": 0,
+      "train/test": 0,
+      "validation/test": 0
+    },
+    "exact_normalized_answer": {
+      "train/validation": 0,
+      "train/test": 0,
+      "validation/test": 0
+    },
+    "component": {
+      "train/validation": 0,
+      "train/test": 0,
+      "validation/test": 0
+    },
+    "normalized_question": {
+      "train/validation": 0,
+      "train/test": 0,
+      "validation/test": 0
+    }
+  }
+}

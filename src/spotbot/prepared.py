@@ -19,6 +19,7 @@ from .splitting import (
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SPLIT_FILES = {"train": "train_ids.csv", "validation": "val_ids.csv", "test": "test_ids.csv"}
+SPLIT_VERSIONS = {"80_10_10": "splits", "70_15_15": "splits_70_15_15"}
 
 
 def prepared_fingerprint(groups: pd.DataFrame) -> str:
@@ -59,13 +60,21 @@ def apply_saved_split_ids(groups: pd.DataFrame, split_dir: str | Path) -> pd.Dat
 def load_prepared_splits(
     raw_path: str | Path | None = None,
     split_dir: str | Path | None = None,
+    *,
+    split_version: str = "80_10_10",
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """Return train, validation, test answers using the saved September IDs.
+    """Return train, validation, test answers using saved question-group IDs.
 
     Uses data/hc3_all.csv by default, or downloads HC3 if that file is absent.
-    This function never creates a new random split.
+    The default stays 80/10/10; opt into the experiment with split_version="70_15_15".
+    This function never creates a new random split. A custom split_dir cannot
+    be combined with a non-default split_version.
     """
-    split_dir = Path(split_dir) if split_dir is not None else REPO_ROOT / "data" / "splits"
+    if split_version not in SPLIT_VERSIONS:
+        raise ValueError(f"Unknown split_version: {split_version!r}; choose from {tuple(SPLIT_VERSIONS)}")
+    if split_dir is not None and split_version != "80_10_10":
+        raise ValueError("Use either split_dir or a non-default split_version, not both")
+    split_dir = Path(split_dir) if split_dir is not None else REPO_ROOT / "data" / SPLIT_VERSIONS[split_version]
     path = Path(raw_path) if raw_path is not None else REPO_ROOT / "data" / "hc3_all.csv"
     raw = load_hc3_csv(path) if path.exists() or raw_path is not None else load_hc3_from_huggingface()
     groups, _, _ = prepare_question_groups(raw)
