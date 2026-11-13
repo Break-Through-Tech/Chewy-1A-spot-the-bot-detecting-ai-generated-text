@@ -1,13 +1,19 @@
 # Spot the Bot: Detecting AI-Generated Text
 
-This Break Through Tech AI Studio project builds a human-vs-AI text classifier
-using the HC3 Human ChatGPT Comparison Corpus. The September milestone focuses
-on data understanding and preparation: reproducible HC3 loading, data-quality
-checks, question-group train/validation/test splitting, answer expansion,
-leakage checks, and EDA.
+Our Break Through Tech AI Studio team used the HC3 Human ChatGPT Comparison Corpus to classify answers as human-written or AI-generated. We compared models using macro-F1 so that both classes count equally despite the dataset imbalance.
 
-The manager/advisor-provided project scope and future milestones live in
-[`Challenge-Project-Overview.md`](Challenge-Project-Overview.md).
+## Results at a glance
+
+The transformer-based logistic regression model had the highest reported held-out macro-F1 (**0.9891**) and accuracy (**99.04%**) among models with results in the [comparison table](#final-test-comparison). The TF-IDF neural network scored **0.9819** macro-F1, and logistic regression scored **0.9761**. These results describe HC3. A useful next step is testing on newer models and text from sources outside HC3.
+
+## Start here
+
+1. Follow [Setup](#setup) to install the dependencies.
+2. Inspect the [sample CSV](data/hc3_sample.csv) and [data schema](data/README.md), then [download HC3](#getting-hc3) for the full experiment.
+3. Open the [data exploration notebook](notebooks/Chewy_1A.ipynb) for preparation and visualizations or the [TF-IDF logistic regression notebook](notebooks/02_tfidf_logistic_regression.ipynb) for a model example.
+4. Use the [shared training and evaluation guide](#milestone-2-shared-setup) to reproduce the splits and calculate metrics.
+
+See the [challenge overview](Challenge-Project-Overview.md) for the original scope and milestones.
 
 ## Team Members
 
@@ -38,8 +44,7 @@ Implemented September data-preparation pieces:
 - Tests for the core data-preparation invariants.
 - Notebook narrative for September EDA and TF-IDF feature-preparation checks.
 
-October modeling, neural networks, robustness experiments, deployment, Streamlit,
-and API work are intentionally out of scope for this cleanup.
+See the [modeling section](#milestone-2-shared-setup) for the work that followed this milestone.
 
 ## Repository Structure
 
